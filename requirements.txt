@@ -1,7 +1,8 @@
 flask
 flask-mongoengine
-flask-restful
+flask-restplus
 flask-bcrypt
 flask-jwt-extended
+flask-script
 dnspython
 gunicorn

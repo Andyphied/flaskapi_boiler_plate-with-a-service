@@ -24,7 +24,7 @@ errors = {
      },
      "EmailAlreadyExistsError": {
          "message": "User with given email address already exists",
-         "status": 400
+         "status": 409
      },
      "UnauthorizedError": {
          "message": "Invalid username or password",

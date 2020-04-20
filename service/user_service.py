@@ -1,6 +1,5 @@
 import datetime
 
-from marshmallow import ValidationError
 from database.models import db, User
 from resources.errors import SchemaValidationError, EmailAlreadyExistsError, UnauthorizedError, \
 InternalServerError
@@ -26,7 +25,8 @@ def  save_new_user(data):
         save_changes(new_user)
 
     except Exception as e:
-            raise InternalServerError
+        print (e)
+        raise InternalServerError
 
     else:
         response_object = {

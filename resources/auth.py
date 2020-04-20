@@ -1,41 +1,46 @@
-from flask import Response, request
-from flask_jwt_extended import create_access_token
-from database.models import User
-from flask_restful import Resource
-import datetime
-from mongoengine.errors import FieldDoesNotExist, NotUniqueError, DoesNotExist
-from resources.errors import SchemaValidationError, EmailAlreadyExistsError, UnauthorizedError, \
-InternalServerError
+from flask import request
 
+from database.models import User, UserSchema
+from flask_restplus import Resource
+from utils.dto import UserDto, AuthDto
+from marshmallow import ValidationError
+from service.user_service import save_new_user
+from service.auth_helper import Auth
+
+
+users_schema = UserSchema(many=True)
+user_schema = UserSchema()
+
+api = UserDto.api
+_user = UserDto.user
+
+api_auth = AuthDto.api
+_user_auth = AuthDto.user_auth
+
+@api.route('/')
 class SignupApi(Resource):
-    def post(self):
-        try:
-            body = request.get_json()
-            user =  User(**body)
-            user.hash_password()
-            user.save()
-            id = user.id
-            return {'id': str(id)}, 200
-        except FieldDoesNotExist:
-            raise SchemaValidationError
-        except NotUniqueError:
-            raise EmailAlreadyExistsError
-        except Exception as e:
-            raise InternalServerError
 
+    @api.response(201, 'User sucessfully created')
+    @api.doc('create a new user')
+    @api.expect(_user, validate=True)
+    def post(self):
+        data = request.get_json()
+        try:
+            data = user_schema.load(data)
+        except ValidationError as err:
+             err.messages
+        return save_new_user(data=data)
+        
+        
+@api_auth.route('/login')
 class LoginApi(Resource):
-    def post(self):
-        try:
-            body = request.get_json()
-            user = User.objects.get(email=body.get('email'))
-            authorized = user.check_password(body.get('password'))
-            if not authorized:
-                raise UnauthorizedError
 
-            expires = datetime.timedelta(days=7)
-            access_token = create_access_token(identity=str(user.id), expires_delta=expires)
-            return {'token': access_token}, 200
-        except (UnauthorizedError, DoesNotExist):
-            raise UnauthorizedError
-        except Exception as e:
-            raise InternalServerError
+    @api_auth.doc('user login')
+    @api_auth.expect(_user_auth, validate=True)
+    def post(self):
+        data = request.get_json()
+        try:
+            data = user_schema.load(data)
+        except ValidationError as err:
+             err.messages
+        return Auth.login_user(data=data)

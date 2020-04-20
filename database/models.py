@@ -38,7 +38,7 @@ class CarServiceDataSchema(ma.SQLAlchemySchema):
         model = CarServiceDataModel
     
     car_model = ma.auto_field
-    data = ma.auto_field
+    date = ma.auto_field
 
 class  UserSchema(ma.SQLAlchemySchema):
     class Meta:

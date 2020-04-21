@@ -1,4 +1,5 @@
 import datetime
+import random
 
 from flask import request
 from database.models import CarServiceDataModel, CarServiceDataSchema, db
@@ -6,14 +7,15 @@ from utils.dto import CarServiceDto
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restplus import Resource
 from resources.errors import InternalServerError,NoAuthorizationError
+from utils.decorator import token_required
 
-import random
 
 api = CarServiceDto.api
 _service = CarServiceDto.car_service
 
 car_schema = CarServiceDataSchema()
 
+@token_required
 @api.route('/car_service')
 class CarService(Resource):    
 

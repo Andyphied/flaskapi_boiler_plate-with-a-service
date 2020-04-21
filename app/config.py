@@ -9,7 +9,7 @@ class Config(object):
     TESTING =False
     CSRF_ENABLED = True
     SECRET_KEY = os.getenv('SECRET_KEY', 'our_precious_key')
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'make_shift.db')
 
 
 class ProductionConfig(Config):

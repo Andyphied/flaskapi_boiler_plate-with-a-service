@@ -23,7 +23,6 @@ class CarService(Resource):
     @api.expect(_service, validate=True)
     def post(self):
         try:
-            user_id = get_jwt_identity()
             data = request.get_json()
             data = car_schema.load(data)
             car_service_data = CarServiceDataModel(

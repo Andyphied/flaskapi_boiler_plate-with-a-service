@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask_restplus import Api
 from resources.errors import errors
-from resources.auth import api as user_ns
+from resources.users_resource import api as user_ns
 from resources.auth import api_auth as auth_ns
 from resources.carservice import api as car_service_ns
 
